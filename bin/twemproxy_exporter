@@ -1,0 +1,40 @@
+#! /usr/bin/env ruby
+
+require 'optparse'
+require 'prometheus/client/rack/exporter'
+require 'rack'
+
+config = {
+  interval: 30,
+  proxies: []
+}
+
+OptionParser.new do |args|
+  args.banner = "#{$0} [flags] [host[:port] ...]"
+
+  args.on('-i', '--interval <seconds>') do |seconds|
+    config[:interval] = seconds
+  end
+
+  args.on('-f', '--config <file>') do |file|
+    config = YAML.load_file(file)
+  end
+end.parse!
+
+
+config[:proxies] += ARGV
+require_relative '../lib/exporter'
+exporter = Exporter.new(config)
+Thread.new {exporter.run!}
+
+app = Rack::Builder.app do
+  use Rack::CommonLogger
+  use Prometheus::Client::Rack::Exporter
+  use Rack::Deflater, if: ->(_, _, _, body) { body.any? && body[0].length > 512 }
+
+  map '/' do
+    run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK']] }
+  end
+end
+
+Rack::Handler::WEBrick.run app
