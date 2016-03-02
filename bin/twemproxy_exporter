@@ -3,17 +3,18 @@
 require 'optparse'
 require 'prometheus/client/rack/exporter'
 require 'rack'
+require 'yaml'
 
 config = {
-  interval: 30,
-  proxies: []
+  'interval' => 30,
+  'proxies'  => []
 }
 
 OptionParser.new do |args|
   args.banner = "#{$0} [flags] [host[:port] ...]"
 
   args.on('-i', '--interval <seconds>') do |seconds|
-    config[:interval] = seconds
+    config['interval'] = seconds
   end
 
   args.on('-f', '--config <file>') do |file|
@@ -22,7 +23,7 @@ OptionParser.new do |args|
 end.parse!
 
 
-config[:proxies] += ARGV
+config['proxies'] += ARGV
 require_relative '../lib/exporter'
 exporter = Exporter.new(config)
 Thread.new {exporter.run!}
