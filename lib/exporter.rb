@@ -36,13 +36,12 @@ class Exporter
   attr_reader :server_err
   attr_reader :server_timedout
 
-  
   def initialize(config)
     @running  = true
     @registry = Prometheus::Client.registry
     @interval = config[:interval] || 30
-    @proxies  = config[:proxies].map do |arg|
-      host, port = arg.split(':')
+    @proxies  = config[:proxies].map do |proxy|
+      host, port = proxy.split(':')
       Twemproxy.new(self, host, port || 22222)
     end
 
