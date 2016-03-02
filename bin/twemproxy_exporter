@@ -6,22 +6,28 @@ require 'rack'
 require 'yaml'
 
 config = {
-  'interval' => 30,
-  'proxies'  => []
+  'proxies' => []
 }
 
 OptionParser.new do |args|
   args.banner = "#{$0} [flags] [host[:port] ...]"
 
   args.on('-i', '--interval <seconds>') do |seconds|
-    config['interval'] = seconds
+    config['interval'] = seconds.to_i
   end
 
   args.on('-f', '--config <file>') do |file|
     config = YAML.load_file(file)
   end
-end.parse!
 
+  args.on('-p', '--port <number>') do |port|
+    config['port'] = port.to_i
+  end
+
+  args.on('-b', '--bind <address>') do |bind|
+    config['bind'] = bind
+  end
+end.parse!
 
 config['proxies'] += ARGV
 require_relative '../lib/exporter'
@@ -34,8 +40,13 @@ app = Rack::Builder.app do
   use Rack::Deflater, if: ->(_, _, _, body) { body.any? && body[0].length > 512 }
 
   map '/' do
-    run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK']] }
+    run ->(env) {[200, {'Content-Type' => 'text/plain'}, ['OK']]}
   end
 end
 
-Rack::Handler::WEBrick.run app
+Rack::Server.start({
+  app:       app,
+  AccessLog: [], # Shut up, WEBrick.
+  Host:      config['bind'] || '0.0.0.0',
+  Port:      config['port'] || 9222
+})
