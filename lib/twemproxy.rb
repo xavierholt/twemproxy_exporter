@@ -51,12 +51,15 @@ class Twemproxy
         @exporter.server_timedout.count    sinfo['server_timedout'],    labels
       end
     end
+  rescue StandardError => e
+    warn e
   end
 
   def stats
     socket = TCPSocket.new(@host, @port)
-    return YAML.load(socket.read)
+    return YAML.load(socket.read) if select([socket], nil, nil, @exporter.timeout)
+    raise "Connection to #{@host}:#{@port} timed out after #{@exporter.timeout} seconds."
   ensure
-    socket.close
+    socket.close if socket
   end
 end

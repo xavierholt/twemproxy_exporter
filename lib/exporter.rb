@@ -7,6 +7,7 @@ require_relative 'twemproxy'
 class Exporter
   attr_reader :proxies
   attr_reader :registry
+  attr_reader :timeout
 
   # Twemproxy Metrics
   attr_reader :curr_connections
@@ -37,8 +38,9 @@ class Exporter
   attr_reader :server_timedout
 
   def initialize(config)
-    @running  = true
+    @running  = false
     @registry = Prometheus::Client.registry
+    @timeout  = config['timeout'] || 5.0
     @interval = config['interval'] || 30
     @proxies  = config['proxies'].map do |proxy|
       host, port = proxy.split(':')
@@ -75,15 +77,14 @@ class Exporter
   end
 
   def run!
+    @running = true
+
     while @running
       threads = @proxies.map do |proxy|
         Thread.new {proxy.count}
       end
 
-      threads.each do |thread|
-        thread.join
-      end
-
+      threads.each(&:join)
       self.sleep
     end
   end
@@ -94,7 +95,7 @@ class Exporter
 
 protected
   def sleep
-    @interval.times do |i|
+    @interval.times do
       break unless @running
       Kernel.sleep 1
     end
