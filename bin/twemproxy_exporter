@@ -8,7 +8,7 @@ require 'yaml'
 config = {}
 
 OptionParser.new do |args|
-  args.banner = "#{$0} [flags] [host[:port] ...]"
+  args.banner = "#{$0} [flags] host[:port] ..."
 
   args.on('-i', '--interval <seconds>') do |seconds|
     config['interval'] = seconds.to_i
