@@ -31,9 +31,12 @@ OptionParser.new do |args|
   end
 end.parse!
 
-require_relative '../lib/exporter'
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
+require 'twemproxy_exporter'
+
 config['proxies'] = Array(config['proxies']) + ARGV
-exporter = Exporter.new(config)
+exporter = TwemproxyExporter::Exporter.new(config)
 Thread.new {exporter.run!}
 
 app = Rack::Builder.app do

@@ -1,0 +1,5 @@
+require "twemproxy_exporter/version"
+require "twemproxy_exporter/gauge"
+require "twemproxy_exporter/counter"
+require "twemproxy_exporter/twemproxy"
+require "twemproxy_exporter/exporter"
