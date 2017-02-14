@@ -33,6 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
 
-  spec.add_dependency "prometheus-client", "~> 0.6.0"
-  spec.add_dependency "rack", "~> 2.0.0"
+  spec.add_runtime_dependency "prometheus-client", "~> 0.6.0"
+  spec.add_runtime_dependency "rack", "~> 2.0.0"
 end
