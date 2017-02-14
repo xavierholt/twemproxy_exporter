@@ -6,7 +6,7 @@ module Helpers
     ivar = case collector
       when TwemproxyExporter::Counter then :@counter
       when TwemproxyExporter::Gauge then :@gauge
-      else; raise "Unknown collector type: #{collector.type.name}"
+      else; raise "Unknown collector type: #{collector.class.name}"
     end
     collector.send(:instance_variable_get, ivar).get(labels)
   end
