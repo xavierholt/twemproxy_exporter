@@ -5,6 +5,10 @@ require 'prometheus/client/rack/exporter'
 require 'rack'
 require 'yaml'
 
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
+require 'twemproxy_exporter'
+
 config = {}
 
 OptionParser.new do |args|
@@ -29,11 +33,12 @@ OptionParser.new do |args|
   args.on('-b', '--bind <address>') do |bind|
     config['bind'] = bind
   end
-end.parse!
 
-lib = File.expand_path('../../lib', __FILE__)
-$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
-require 'twemproxy_exporter'
+  args.on_tail('-v', '--version') do
+    puts ::TwemproxyExporter::VERSION
+    exit(0)
+  end
+end.parse!
 
 config['proxies'] = Array(config['proxies']) + ARGV
 exporter = TwemproxyExporter::Exporter.new(config)
