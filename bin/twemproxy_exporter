@@ -5,20 +5,23 @@ require 'prometheus/client/rack/exporter'
 require 'rack'
 require 'yaml'
 
-lib = File.expand_path('../../lib', __FILE__)
-$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 require 'twemproxy_exporter'
 
-config = {}
+config = {
+  'interval' => 30,
+  'timeout' => 5.0,
+  'port' => 9222,
+  'bind' => '0.0.0.0'
+}
 
 OptionParser.new do |args|
-  args.banner = "#{$0} [flags] host[:port] ..."
+  args.banner = "Usage: #{File.basename($0)} [flags] host[:port] ...\nOptions:"
 
-  args.on('-i', '--interval <seconds>') do |seconds|
+  args.on('-i', '--interval <seconds>', "Default: #{config['interval']}") do |seconds|
     config['interval'] = seconds.to_i
   end
 
-  args.on('-t', '--timeout <seconds>') do |seconds|
+  args.on('-t', '--timeout <seconds>', "Default: #{config['timeout']}") do |seconds|
     config['timeout'] = seconds.to_f
   end
 
@@ -26,11 +29,11 @@ OptionParser.new do |args|
     config = YAML.load_file(file)
   end
 
-  args.on('-p', '--port <number>') do |port|
+  args.on('-p', '--port <number>', "Default: #{config['port']}") do |port|
     config['port'] = port.to_i
   end
 
-  args.on('-b', '--bind <address>') do |bind|
+  args.on('-b', '--bind <address>', "Default: #{config['bind']}") do |bind|
     config['bind'] = bind
   end
 

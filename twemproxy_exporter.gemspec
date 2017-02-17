@@ -6,8 +6,8 @@ require 'twemproxy_exporter/version'
 Gem::Specification.new do |spec|
   spec.name          = "twemproxy_exporter"
   spec.version       = TwemproxyExporter::VERSION
-  spec.authors       = ["xavierholt"]
-  spec.email         = ["xavierholt@example.com"]
+  spec.authors       = ["xavierholt", "Andrew Tongen"]
+  spec.email         = ["xavierholt@gmail.com"]
 
   spec.summary       = %q{A Prometheus exporter for Twemproxy / Nutcracker.}
   spec.description   = %q{A Prometheus exporter for Twemproxy / Nutcracker.}

@@ -7,7 +7,7 @@ describe TwemproxyExporter::Gauge do
   end
 
   context "#count" do
-    it "should only increase" do
+    it "should increase or decrease" do
       @gauge.count(0)
       expect(collector_value(@gauge)).to eq(0)
 
