@@ -1,4 +1,4 @@
-require "spec_helper"
+require_relative "../spec_helper"
 
 describe TwemproxyExporter::Exporter do
   let(:stats_file) { File.open("spec/fixtures/files/stats.json") }
