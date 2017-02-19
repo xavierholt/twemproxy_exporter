@@ -1,5 +1,4 @@
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
-require "twemproxy_exporter"
+require_relative "../lib/twemproxy_exporter"
 
 module Helpers
   def collector_value(collector, labels = {})

@@ -5,7 +5,7 @@ require 'prometheus/client/rack/exporter'
 require 'rack'
 require 'yaml'
 
-require 'twemproxy_exporter'
+require_relative '../lib/twemproxy_exporter'
 
 config = {
   'interval' => 30,
