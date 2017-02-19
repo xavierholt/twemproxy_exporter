@@ -1,5 +1,7 @@
 # coding: utf-8
-require_relative 'lib/twemproxy_exporter/version'
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'twemproxy_exporter/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "twemproxy_exporter"
