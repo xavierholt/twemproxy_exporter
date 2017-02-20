@@ -15,5 +15,9 @@ module TwemproxyExporter
 
       @last = value
     end
+
+    def value(labels = {})
+      @counter.get(labels)
+    end
   end
 end

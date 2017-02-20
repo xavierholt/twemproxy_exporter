@@ -8,5 +8,9 @@ module TwemproxyExporter
     def count(value, labels = {})
       @gauge.set(labels, value)
     end
+
+    def value(labels = {})
+      @gauge.get(labels)
+    end
   end
 end
