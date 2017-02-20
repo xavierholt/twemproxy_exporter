@@ -1,4 +1,5 @@
 # twemproxy_exporter
+[![Build Status](https://travis-ci.org/xavierholt/twemproxy_exporter.svg?branch=master)](https://travis-ci.org/xavierholt/twemproxy_exporter)
 
 This is a simple Prometheus exporter for Twemproxy (a.k.a. Nutcracker), written
 in Ruby.  It currently takes a list of Twemproxy URLs to monitor and exposes

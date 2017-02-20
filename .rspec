@@ -1,4 +1,4 @@
---require twemproxy_exporter
 --require spec_helper
+--require twemproxy_exporter
 --format documentation
 --color
