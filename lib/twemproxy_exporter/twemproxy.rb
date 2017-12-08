@@ -58,8 +58,14 @@ module TwemproxyExporter
 
     def stats
       socket = TCPSocket.new(@host, @port)
-      return YAML.load(socket.read) if select([socket], nil, nil, @exporter.timeout)
-      raise "Connection to #{@host}:#{@port} timed out after #{@exporter.timeout} seconds."
+      if not select([socket], nil, nil, @exporter.timeout)
+        raise "Connection to #{@host}:#{@port} timed out after #{@exporter.timeout} seconds."
+      end
+      data = socket.read
+      # Double-quoted server aliases are not escaped by twemproxy
+      # https://github.com/twitter/twemproxy/issues/532
+      data.gsub!(/"("[^"]+")"/, '\1')
+      return YAML.load(data)
     ensure
       socket.close if socket
     end
