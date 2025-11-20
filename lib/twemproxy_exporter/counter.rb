@@ -3,17 +3,17 @@ module TwemproxyExporter
     def initialize(registry, name, desc)
       @counter = Prometheus::Client::Counter.new(name, desc)
       registry.register(@counter)
-      @last = 0
+      @last_values = {}
     end
 
     def count(value, labels = {})
-      if value >= @last
-        @counter.increment(labels, value - @last)
+      last = @last_values[labels] || 0
+      if value >= last
+        @counter.increment(labels, value - last)
       else
         @counter.increment(labels, value)
       end
-
-      @last = value
+      @last_values[labels] = value
     end
 
     def value(labels = {})
