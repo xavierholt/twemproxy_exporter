@@ -1,22 +1,16 @@
 describe TwemproxyExporter::Counter do
   context "#count" do
     context "without labels" do
-      before(:all) do
-        registry = Prometheus::Client.registry
-        @counter = TwemproxyExporter::Counter.new(registry, :test_total, "A test counter")
-      end
-
       it "should only increase" do
+        registry = Prometheus::Client.registry
+        @counter = TwemproxyExporter::Counter.new(registry, :test_increase_total, "A test counter")
+
         expect do
           @counter.count(5)
         end.to change { @counter.value }.by(5)
 
         expect do
           @counter.count(5)
-        end.to change { @counter.value }.by(0)
-
-        expect do
-          @counter.count(0)
         end.to change { @counter.value }.by(0)
 
         expect do
@@ -29,15 +23,37 @@ describe TwemproxyExporter::Counter do
 
         @counter.value.should eq(10)
       end
+
+      it "handle upstream counter reset" do
+        registry = Prometheus::Client.registry
+        @counter = TwemproxyExporter::Counter.new(registry, :test_reset_total, "A test counter")
+
+        expect do
+          @counter.count(5)
+        end.to change { @counter.value }.by(5)
+
+        # upstream counter reset!
+        expect do
+          @counter.count(1)
+        end.to change { @counter.value }.by(1)
+
+        expect do
+          @counter.count(6)
+        end.to change { @counter.value }.by(5)
+
+        expect do
+          @counter.count(7)
+        end.to change { @counter.value }.by(1)
+
+        @counter.value.should eq(12)
+      end
     end
 
     context "with labels" do
-      before(:all) do
+      it "should handle multiple labels independently" do
         registry = Prometheus::Client.registry
         @counter = TwemproxyExporter::Counter.new(registry, :test_with_labels_total, "A test counter with labels")
-      end
 
-      it "should handle multiple labels independently" do
         label_a = { server: 'A' }
         label_b = { server: 'B' }
 
