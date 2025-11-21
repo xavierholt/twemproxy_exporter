@@ -16,7 +16,8 @@ module TwemproxyExporter
     def count
       stats  = self.stats
       name   = stats['source']
-      labels = {twemproxy: name}
+      proxy  = "#{@host}:#{@port}"
+      labels = {twemproxy: name, proxy: proxy}
 
       @exporter.total_connections.count stats['total_connections'], labels
       @exporter.curr_connections.count  stats['curr_connections'],  labels
@@ -24,7 +25,7 @@ module TwemproxyExporter
 
       stats.each do |cluster, cinfo|
         next unless cinfo.is_a? Hash
-        labels = {twemproxy: name, cluster: cluster}
+        labels = {twemproxy: name, proxy: proxy, cluster: cluster}
 
         @exporter.fragments.count          cinfo['fragments'],          labels
         @exporter.forward_error.count      cinfo['forward_error'],      labels
@@ -35,7 +36,7 @@ module TwemproxyExporter
 
         cinfo.each do |server, sinfo|
           next unless sinfo.is_a? Hash
-          labels = {twemproxy: name, cluster: cluster, server: server}
+          labels = {twemproxy: name, proxy: proxy, cluster: cluster, server: server}
 
           @exporter.in_queue.count           sinfo['in_queue'],           labels
           @exporter.in_queue_bytes.count     sinfo['in_queue_bytes'],     labels
