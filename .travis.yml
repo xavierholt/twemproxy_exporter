@@ -3,5 +3,6 @@ language: ruby
 rvm:
   - 2.2.2 # Oldest compatible Ruby
   - 2.3.1
-  - 2.4.0 # Most recent Ruby release
-before_install: gem install bundler -v 1.13.7
+  - 2.4.0
+  - 3.4.7 # Most recent Ruby release
+before_install: gem install bundler -v 2.7.2
