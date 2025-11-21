@@ -1,7 +1,7 @@
 describe TwemproxyExporter::Exporter do
   let(:stats_file) { File.open("spec/fixtures/files/stats.json") }
   let(:config) { { "proxies" => ["localhost"] } }
-  let(:twemproxy_labels) { { twemproxy: "app-production-redis-twemproxy" } }
+  let(:twemproxy_labels) { { twemproxy: "app-production-redis-twemproxy", proxy: "localhost:22222" } }
   let(:cluster_labels) { twemproxy_labels.merge({ cluster: "app_persistent" }) }
 
   before do
